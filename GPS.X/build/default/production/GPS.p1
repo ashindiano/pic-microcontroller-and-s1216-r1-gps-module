@@ -1,0 +1,223 @@
+Version 3.2 HI-TECH Software Intermediate Code
+[v F94 `(v ~T0 @X0 0 tf ]
+[v F96 `(uc ~T0 @X0 0 tf ]
+[v F98 `(v ~T0 @X0 0 tf1`uc ]
+"9 GPS.h
+[s S1 `uc -> 10 `i `uc -> 11 `i `uc 1 `uc 1 ]
+[n S1 _GPS latitude longitude lat_cardinal lon_cardinal ]
+[; ;__size_t.h: 4: typedef unsigned size_t;
+[; ;string.h: 14: extern void * memcpy(void *, const void *, size_t);
+[; ;string.h: 15: extern void * memmove(void *, const void *, size_t);
+[; ;string.h: 16: extern void * memset(void *, int, size_t);
+[; ;string.h: 34: extern char * strcat(char *, const char *);
+[; ;string.h: 35: extern char * strcpy(char *, const char *);
+[; ;string.h: 36: extern char * strncat(char *, const char *, size_t);
+[; ;string.h: 37: extern char * strncpy(char *, const char *, size_t);
+[; ;string.h: 38: extern char * strdup(const char *);
+[; ;string.h: 39: extern char * strtok(char *, const char *);
+[; ;string.h: 42: extern int memcmp(const void *, const void *, size_t);
+[; ;string.h: 43: extern int strcmp(const char *, const char *);
+[; ;string.h: 44: extern int stricmp(const char *, const char *);
+[; ;string.h: 45: extern int strncmp(const char *, const char *, size_t);
+[; ;string.h: 46: extern int strnicmp(const char *, const char *, size_t);
+[; ;string.h: 47: extern void * memchr(const void *, int, size_t);
+[; ;string.h: 48: extern size_t strcspn(const char *, const char *);
+[; ;string.h: 49: extern char * strpbrk(const char *, const char *);
+[; ;string.h: 50: extern size_t strspn(const char *, const char *);
+[; ;string.h: 51: extern char * strstr(const char *, const char *);
+[; ;string.h: 52: extern char * stristr(const char *, const char *);
+[; ;string.h: 53: extern char * strerror(int);
+[; ;string.h: 54: extern size_t strlen(const char *);
+[; ;string.h: 55: extern char * strchr(const char *, int);
+[; ;string.h: 56: extern char * strichr(const char *, int);
+[; ;string.h: 57: extern char * strrchr(const char *, int);
+[; ;string.h: 58: extern char * strrichr(const char *, int);
+[; ;GPS.h: 9: struct _GPS {
+[; ;GPS.h: 10: char latitude[10];
+[; ;GPS.h: 11: char longitude[11];
+[; ;GPS.h: 12: char lat_cardinal;
+[; ;GPS.h: 13: char lon_cardinal;
+[; ;GPS.h: 14: };
+[; ;GPS.h: 15: typedef struct _GPS GPS;
+[; ;GPS.h: 16: extern int _GPS_location_avail;
+"18 GPS.h
+[v __UartInit `*F94 ~T0 @X0 1 e ]
+[; ;GPS.h: 18: void (*_UartInit)();
+"19
+[v __UartReceiveByte `*F96 ~T0 @X0 1 e ]
+[; ;GPS.h: 19: unsigned char (*_UartReceiveByte)();
+"20
+[v __UartSendByte `*F98 ~T0 @X0 1 e ]
+[; ;GPS.h: 20: void (*_UartSendByte)(unsigned char);
+[; ;GPS.h: 21: void _GPSInit();
+[; ;GPS.h: 22: void _GPSRoutines();
+[; ;GPS.h: 23: GPS _GPSValues();
+"3 GPS.c
+[v __GPS_location_avail `i ~T0 @X0 1 e ]
+[i __GPS_location_avail
+-> 0 `i
+]
+[; ;GPS.c: 3: int _GPS_location_avail = 0;
+"5
+[v _gps `S1 ~T0 @X0 1 e ]
+[; ;GPS.c: 5: GPS gps;
+"6
+[v _rec_count `i ~T0 @X0 1 e ]
+[i _rec_count
+-> 0 `i
+]
+[; ;GPS.c: 6: int rec_count = 0;
+"9
+[v _UartBuffer `uc ~T0 @X0 -> 45 `i e ]
+[; ;GPS.c: 9: char UartBuffer[45];
+[; ;GPS.c: 11: void (*_UartInit)();
+[; ;GPS.c: 12: unsigned char (*_UartReceiveByte)();
+[; ;GPS.c: 13: void (*_UartSendByte)(unsigned char);
+"15
+[v __GPSRoutines `(v ~T0 @X0 1 ef ]
+{
+[; ;GPS.c: 15: void _GPSRoutines(){
+[e :U __GPSRoutines ]
+[f ]
+"16
+[v _i `i ~T0 @X0 1 a ]
+[; ;GPS.c: 16: int i = 0;
+[e = _i -> 0 `i ]
+"17
+[v _x `uc ~T0 @X0 1 a ]
+[; ;GPS.c: 17: char x = _UartReceiveByte();
+[e = _x ( *U __UartReceiveByte ..  ]
+[; ;GPS.c: 18: if(x=='$')
+"18
+[e $ ! == -> _x `ui -> 36 `ui 3  ]
+[; ;GPS.c: 19: rec_count =0;
+"19
+[e = _rec_count -> 0 `i ]
+[e :U 3 ]
+[; ;GPS.c: 20: UartBuffer[rec_count++] = x;
+"20
+[e = *U + &U _UartBuffer * -> -> ++ _rec_count -> 1 `i `ui `ux -> -> # *U &U _UartBuffer `ui `ux _x ]
+[; ;GPS.c: 21: UartBuffer[rec_count] = '\0';
+"21
+[e = *U + &U _UartBuffer * -> -> _rec_count `ui `ux -> -> # *U &U _UartBuffer `ui `ux -> -> 0 `ui `uc ]
+[; ;GPS.c: 22: if(UartBuffer[0] == '$' && rec_count <= 42){
+"22
+[e $ ! && == -> *U + &U _UartBuffer * -> -> -> 0 `i `ui `ux -> -> # *U &U _UartBuffer `ui `ux `ui -> 36 `ui <= _rec_count -> 42 `i 4  ]
+{
+[; ;GPS.c: 23: if(rec_count == 42 && UartBuffer[3] == 'G' && UartBuffer[4] == 'G' && UartBuffer[5] == 'A' ){
+"23
+[e $ ! && && && == _rec_count -> 42 `i == -> *U + &U _UartBuffer * -> -> -> 3 `i `ui `ux -> -> # *U &U _UartBuffer `ui `ux `ui -> 71 `ui == -> *U + &U _UartBuffer * -> -> -> 4 `i `ui `ux -> -> # *U &U _UartBuffer `ui `ux `ui -> 71 `ui == -> *U + &U _UartBuffer * -> -> -> 5 `i `ui `ux -> -> # *U &U _UartBuffer `ui `ux `ui -> 65 `ui 5  ]
+{
+[; ;GPS.c: 24: gps.lat_cardinal = UartBuffer[28];
+"24
+[e = . _gps 2 *U + &U _UartBuffer * -> -> -> 28 `i `ui `ux -> -> # *U &U _UartBuffer `ui `ux ]
+[; ;GPS.c: 25: gps.lon_cardinal = UartBuffer[41];
+"25
+[e = . _gps 3 *U + &U _UartBuffer * -> -> -> 41 `i `ui `ux -> -> # *U &U _UartBuffer `ui `ux ]
+[; ;GPS.c: 26: for(i=0;i<9;i++)
+"26
+{
+[e = _i -> 0 `i ]
+[e $ < _i -> 9 `i 6  ]
+[e $U 7  ]
+"27
+[e :U 6 ]
+[; ;GPS.c: 27: gps.latitude[i] = UartBuffer[i+18];
+[e = *U + &U . _gps 0 * -> -> _i `ui `ux -> -> # *U &U . _gps 0 `ui `ux *U + &U _UartBuffer * -> -> + _i -> 18 `i `ui `ux -> -> # *U &U _UartBuffer `ui `ux ]
+"26
+[e ++ _i -> 1 `i ]
+[e $ < _i -> 9 `i 6  ]
+[e :U 7 ]
+"27
+}
+[; ;GPS.c: 28: gps.latitude[i] = '\0';
+"28
+[e = *U + &U . _gps 0 * -> -> _i `ui `ux -> -> # *U &U . _gps 0 `ui `ux -> -> 0 `ui `uc ]
+[; ;GPS.c: 29: for(i=0;i<10;i++)
+"29
+{
+[e = _i -> 0 `i ]
+[e $ < _i -> 10 `i 9  ]
+[e $U 10  ]
+"30
+[e :U 9 ]
+[; ;GPS.c: 30: gps.longitude[i] = UartBuffer[i+30];
+[e = *U + &U . _gps 1 * -> -> _i `ui `ux -> -> # *U &U . _gps 1 `ui `ux *U + &U _UartBuffer * -> -> + _i -> 30 `i `ui `ux -> -> # *U &U _UartBuffer `ui `ux ]
+"29
+[e ++ _i -> 1 `i ]
+[e $ < _i -> 10 `i 9  ]
+[e :U 10 ]
+"30
+}
+[; ;GPS.c: 31: gps.longitude[i] = '\0';
+"31
+[e = *U + &U . _gps 1 * -> -> _i `ui `ux -> -> # *U &U . _gps 1 `ui `ux -> -> 0 `ui `uc ]
+[; ;GPS.c: 32: _GPS_location_avail = 1;
+"32
+[e = __GPS_location_avail -> 1 `i ]
+"33
+}
+[e :U 5 ]
+"34
+}
+[; ;GPS.c: 33: }
+[; ;GPS.c: 34: }else{
+[e $U 12  ]
+[e :U 4 ]
+{
+[; ;GPS.c: 35: rec_count = 0;
+"35
+[e = _rec_count -> 0 `i ]
+[; ;GPS.c: 36: UartBuffer[rec_count] = '\0';
+"36
+[e = *U + &U _UartBuffer * -> -> _rec_count `ui `ux -> -> # *U &U _UartBuffer `ui `ux -> -> 0 `ui `uc ]
+[; ;GPS.c: 37: _GPS_location_avail = 0;
+"37
+[e = __GPS_location_avail -> 0 `i ]
+"38
+}
+[e :U 12 ]
+[; ;GPS.c: 38: }
+[; ;GPS.c: 40: }
+"40
+[e :UE 2 ]
+}
+"42
+[v __GPSInit `(v ~T0 @X0 1 ef ]
+{
+[; ;GPS.c: 42: void _GPSInit(){
+[e :U __GPSInit ]
+[f ]
+[; ;GPS.c: 43: _UartInit();
+"43
+[e ( *U __UartInit ..  ]
+[; ;GPS.c: 44: rec_count =0;
+"44
+[e = _rec_count -> 0 `i ]
+[; ;GPS.c: 45: }
+"45
+[e :UE 13 ]
+}
+"47
+[v __GPSValues `(S1 ~T0 @X0 1 ef ]
+{
+[; ;GPS.c: 47: GPS _GPSValues(){
+[e :U __GPSValues ]
+[f ]
+[; ;GPS.c: 48: _GPS_location_avail = 0;
+"48
+[e = __GPS_location_avail -> 0 `i ]
+[; ;GPS.c: 49: rec_count = 0;
+"49
+[e = _rec_count -> 0 `i ]
+[; ;GPS.c: 50: UartBuffer[rec_count] = '\0';
+"50
+[e = *U + &U _UartBuffer * -> -> _rec_count `ui `ux -> -> # *U &U _UartBuffer `ui `ux -> -> 0 `ui `uc ]
+[; ;GPS.c: 51: return gps;
+"51
+[e ) _gps ]
+[e $UE 14  ]
+[; ;GPS.c: 52: }
+"52
+[e :UE 14 ]
+}
